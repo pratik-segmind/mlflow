@@ -80,6 +80,14 @@ def _read_persisted_run_info_dict(run_info_dict):
     return RunInfo.from_dictionary(dict_copy)
 
 
+_edge_tracking_folder = os.path.join(os.path.expanduser('~'),'.segmind','tracking')
+os.makedirs(_edge_tracking_folder, exist_ok=True)
+_ROOT_DIR = _edge_tracking_folder
+
+def get_username():
+    return 'segtest'
+_USERNAME = get_username()
+
 class FileStore(AbstractStore):
     TRASH_FOLDER_NAME = ".trash"
     ARTIFACTS_FOLDER_NAME = "artifacts"
@@ -96,8 +104,9 @@ class FileStore(AbstractStore):
         Create a new FileStore with the given root directory and a given default artifact root URI.
         """
         super(FileStore, self).__init__()
-        self.root_directory = local_file_uri_to_path(root_directory or _default_root_dir())
-        self.artifact_root_uri = artifact_root_uri or path_to_local_file_uri(self.root_directory)
+        #self.root_directory = local_file_uri_to_path(root_directory or _default_root_dir())
+        self.root_directory = os.path.join(_ROOT_DIR, _USERNAME)
+        self.artifact_root_uri = path_to_local_file_uri(self.root_directory)
         self.trash_folder = os.path.join(self.root_directory, FileStore.TRASH_FOLDER_NAME)
         # Create root directory if needed
         if not exists(self.root_directory):
